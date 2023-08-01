@@ -4,7 +4,7 @@
 {% block 'head' %}
     <link rel="stylesheet" href="{% static 'css/auth/reg.css' %}">
 
-{% endblock  %}
+{% endblock 'head' %}
 
 
 {% block 'title' %}Nutrilab | Register{% endblock %}
@@ -29,7 +29,16 @@
                     <h2 class="titulo">Seja bem vindo</h2>
                     <p class="sub-titulo">Crie sua conta</p>
                     <hr>
+                    {% if messages %}
+                        <br>
+                            {% for message in messages %}
+                                <div class="alert {{message.tags}}">
+                                    {{message}}
+                                </div>
+                            {% endfor %}
+                    {% endif %}
                     
+
                     <form action="{% url 'register'%}" method="POST"> {% csrf_token %}
                         <span class="bold">Nome de usuário</span>
                         <input class="form-control input-form" name="usuario" type="text" placeholder="Digite seu nome...">
@@ -53,7 +62,7 @@
 
                     </form>
 
-                    <h3 style="position: absolute; bottom: 65px; font-weight: bold">Já possui uma conta ?&nbsp <a class="btn btn-outline-success btn-lg">Logar</a> </h3>
+                    <h3 style="position: absolute; bottom: 65px; font-weight: bold">Já possui uma conta ?&nbsp <a class="btn btn-outline-success btn-lg" href="{% url 'login' %}">Logar</a> </h3>
                 </div>
 
             </div>
