@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'css/auth/css.css' %}">
+
+{% endblock 'head' %}
+
+{% block 'body' %}
+{% if user.is_authenticated %}
+      <nav style="background-color: #27DB8F;" class="navbar navbar-expand-lg navbar-dark">
+        <a style="font-weight: bold" class="navbar-brand" href="#">NUTRI LAB</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> 
+      </nav>
+{% endif %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <a href="{% url 'pacientes' %}" class="link-lateral">
+                    <div class="card-lateral">
+                        <img src="{% static 'static/img/paciente.png' %}">
+                        <br>
+                        <br>
+                  
+                        <h3>Gerenciar Pacientes</h3>
+                    </div>
+                  </a>
+                  
+                  <a href="#" class="link-lateral">
+                    <div class="card-lateral">
+                        <img src="{% static 'static/img/dados_paciente.png' %}">
+                        <br>
+                        <br>
+                  
+                        <h3>Dados do Pacientes</h3>
+                    </div>
+                  </a>
+                  
+                  <a href="#" class="link-lateral">
+                    <div class="card-lateral">
+                        <img src="{% static 'static/img/plano_alimentar.png' %}">
+                        <br>
+                        <br>
+                  
+                        <h3>Plano alimentar</h3>
+                    </div>
+                  </a>
+
+            </div>
+
+            <div class="col-md-8">
+                {% block 'plataforma' %}
+
+
+                {% endblock %}
+            </div>
+
+        </div>
+    </div>
+{% endblock%}

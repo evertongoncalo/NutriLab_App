@@ -27,17 +27,17 @@
             <div class="area_cadastrar">
                 {% if messages %}
                     <br>
-                    {% for message in messages %}
-                        <div class="alert {{message.tags}}">
-                            {{message}}
-                        </div>
-                    {% endfor %}
+                        {% for message in messages %}
+                            <div class="alert {{message.tags}}">
+                                {{message}}
+                            </div>
+                        {% endfor %}
                 {% endif %}
                 <h2 class="titulo">Seja bem vindo</h2>
                 <p class="sub-titulo">Entre com sua conta</p>
                 <hr>
                 
-                <form action="{% url 'login' %}" method="POST">{% csrf_token %}
+                <form action="{% url 'logar' %}" method="POST">{% csrf_token %}
                     <span class="bold">Nome de usuário</span>
                     <input class="form-control input-form" name="usuario" type="text" placeholder="Digite seu nome...">
                     <br>
