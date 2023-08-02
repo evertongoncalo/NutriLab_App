@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages,auth
 from django.contrib.messages import constants
@@ -10,7 +10,9 @@ from .models import Pacientes
 @login_required(login_url='/auth/login/')
 def pacientes(request):
     if request.method == "GET":
-        return render(request, 'pacientes.html')
+        pacientes = Pacientes.objects.filter(nutri = request.user)
+        return render(request, 'pacientes.html', {'pacientes': pacientes})
+    
     elif request.method == "POST":
         nome = request.POST.get('nome')
         sexo = request.POST.get('sexo')
@@ -43,9 +45,26 @@ def pacientes(request):
 
             paciente.save()
 
-            messages.add_message(request, constants.SUCCESS, 'Paciênte cadastrado com sucesso')
+            messages.add_message(request, constants.SUCCESS, 'Paciente cadastrado com sucesso')
             return redirect('/pacientes/')
         except:
             messages.add_message(request, constants.ERROR, 'Erro interno do sistema')
             return redirect('/pacientes/')
                 
+
+
+@login_required(login_url='/auth/login/')
+def dados_paciente_listar(request):
+    if request.method == "GET":
+        pacientes = Pacientes.objects.filter(nutri=request.user)
+        return render(request, 'dadospaciente.html', {'pacientes': pacientes})
+    
+@login_required(login_url='/auth/logar/')
+def dados_paciente(request, id):
+    paciente = get_object_or_404(Pacientes, id=id)
+    if not paciente.nutri == request.user:
+        messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
+        return redirect('/dadospaciente/')
+        
+    if request.method == "GET":
+        return render(request, 'paciente.html', {'paciente': paciente})
