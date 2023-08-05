@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages,auth
 from django.contrib.messages import constants
-from .models import Pacientes, DadosPaciente
+from .models import Pacientes, DadosPaciente, Refeicao, Opcao
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -96,10 +96,10 @@ def dados_paciente(request, id):
 
         paciente.save()
 
-        messages.add_message(request, constants.SUCCESS, 'Dados cadastrado com sucesso')
+        messages.add_message(request, constants.SUCCESS, 'Dados cadastrados com sucesso')
 
 
-        return redirect('/dadospaciente')
+        return redirect(f'/paciente/{id}')
  
  
  
@@ -115,5 +115,80 @@ def grafico_peso(request, id):
     data = {'peso': pesos,
             'labels': labels}
     return JsonResponse(data)
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/auth/login')
+
+def plano_alimentar_listar(request):
+    if request.method == "GET":
+        pacientes = Pacientes.objects.filter(nutri=request.user)
+        return render(request, 'planoalimentar.html', {'pacientes': pacientes})
+    
+def plano_alimentar(request, id):
+    paciente = get_object_or_404(Pacientes, id=id)
+    if not paciente.nutri == request.user:
+        messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
+        return redirect('/plano_alimentar_listar/')
+
+    if request.method == "GET":
+        re = Refeicao.objects.filter(paciente=paciente).order_by('horario')
+        opcao = Opcao.objects.all()
+        return render(request, 'plano_alimentar.html', {'paciente': paciente, 'refeicao':re, 'opcao':opcao})
+    
+
+
+def refeicao(request, id_paciente):
+    paciente = get_object_or_404(Pacientes, id=id_paciente)
+    if not paciente.nutri == request.user:
+        messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
+        return redirect('/dadospaciente/')
+    
+    if request.method == "GET":
+        r1 = Refeicao.objects.filter(paciente=paciente).order_by('horario')
+        return render(request, 'plano_alimentar.html', {'paciente': paciente, 'refeicao':r1})
+
+    elif request.method == "POST":
+        titulo = request.POST.get('titulo')
+        horario = request.POST.get('horario')
+        carboidratos = request.POST.get('carboidratos')
+        proteinas = request.POST.get('proteinas')
+        gorduras = request.POST.get('gorduras')
+        
+        if (len(titulo.strip()) == 0) or (len(horario.strip()) == 0) or (len(carboidratos.strip()) == 0) or (len(proteinas.strip()) == 0) or (len(gorduras.strip()) == 0):
+            messages.add_message(request, constants.ERROR, 'Preencha todos os campos')
+            return redirect(f'/plano_alimentar/{id_paciente}')
+
+        if not carboidratos.isnumeric() or proteinas.isnumeric() or gorduras.isnumeric():
+            messages.add_message(request, constants.ERROR, 'numeros válidos')
+            return redirect(f'/plano_alimentar/{id_paciente}')
+
+        r1 = Refeicao(paciente=paciente,
+                      titulo=titulo,
+                      horario=horario,
+                      carboidratos=carboidratos,
+                      proteinas=proteinas,
+                      gorduras=gorduras)
+
+        r1.save()
+
+        messages.add_message(request, constants.SUCCESS, 'Refeição cadastrada')
+        return redirect(f'/plano_alimentar/{id_paciente}')
+    
+def opcao(request, id_paciente):
+    if request.method == "POST":
+        id_refeicao = request.POST.get('refeicao')
+        imagem = request.FILES.get('imagem')
+        descricao = request.POST.get("descricao")
+
+        o1 = Opcao(refeicao_id=id_refeicao,
+                   imagem=imagem,
+                   descricao=descricao)
+
+        o1.save()
+
+        messages.add_message(request, constants.SUCCESS, 'Opcao cadastrada')
+        return redirect(f'/plano_alimentar/{id_paciente}')
     
 

@@ -83,3 +83,4 @@ def ativar_conta(request, token):
     token.save()
     messages.add_message(request, constants.SUCCESS, 'Conta ativa com sucesso')
     return redirect('/auth/login')
+

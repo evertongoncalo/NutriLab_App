@@ -3,17 +3,28 @@
 
 {% block 'head' %}
     <link rel="stylesheet" href="{% static 'css/auth/css.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth/plano_alimentar.css' %}">
 
 {% endblock 'head' %}
 
 {% block 'body' %}
 {% if user.is_authenticated %}
-      <nav style="background-color: #27DB8F;" class="navbar navbar-expand-lg navbar-dark">
-        <a style="font-weight: bold" class="navbar-brand" href="#">NUTRI LAB</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> 
-      </nav>
+    
+    <div style="background-color: #27DB8F;" class="navbar">
+        <h1 style="color: white;">NUTRI LAB</h1>
+        <div style="display: flex; align-items: center;">
+            <h2 style="color: white; margin-right: 15px; ">Olá, {{request.user}}</h2>
+            <a href="{% url 'sair' %}">
+                <button class="btn btn-danger" style="margin-right: 15px;">Sair</button>
+            </a>
+        </div>
+        
+    
+    </div>
+        
+
+        
+    
 {% endif %}
     <div class="container-fluid">
         <div class="row">
@@ -38,7 +49,7 @@
                     </div>
                   </a>
                   
-                  <a href="#" class="link-lateral">
+                  <a href="{%url 'plano_alimentar_listar' %}" class="link-lateral">
                     <div class="card-lateral">
                         <img src="{% static '/img/plano_alimentar.png' %}">
                         <br>

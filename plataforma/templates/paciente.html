@@ -16,13 +16,18 @@
     <div class="row">
 
         <div class="col-md-3">
-            <img src="{% static '/img/perfil1.png' %}">
+            {% if paciente.sexo == "M"%}
+                <img src="{% static '/img/perfil2.png' %}">
+            {% else %}
+                <img src="{% static '/img/perfil1.png' %}">
+            {% endif %}
         </div>
-
+        
         <div class="col-md-3 dados descricao">
-            <h4>Caio Sampaio</h4>
-            <h6>22 Anos</h6>
+            <h4>{{paciente.nome}}</h4>
+            <h6>{{paciente.idade}} anos</h6>
         </div>
+        
         
     </div>
     <hr>
@@ -54,6 +59,13 @@
             
         </tbody>
     </table>
+
+    <div style="width: 60%;">
+        <canvas id="myChart"></canvas>
+    </div> 
+
+
+
 
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -191,6 +203,46 @@
             </div>
         </div>
     </div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    fetch("/grafico_peso/{{paciente.id}}/",{
+        method: 'POST',
+    }).then(function(result){
+        return result.json()
+    }).then(function(data_paciente){
+       
+        const data = {
+            labels: data_paciente['labels'],
+            datasets: [{
+            label: 'Escala de peso paciente: {{paciente.nome}}',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: data_paciente['peso'],
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {}
+        };
+
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+
+    })
+
+
+
+</script>
 
 
     
