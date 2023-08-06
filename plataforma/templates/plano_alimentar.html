@@ -36,9 +36,9 @@
         + Nova refeição
     </button>
 
-    <button type="button" class="btn btn-outline-primary">
+    <a href="{%url 'pdf' paciente.id %}"><button type="button" class="btn btn-outline-primary">
         Exportar refeição
-    </button>
+    </button></a>
     <br>
     <br>
     {% for i in refeicao %}

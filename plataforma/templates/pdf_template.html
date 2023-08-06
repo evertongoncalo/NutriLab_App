@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dieta: {{paciente.nome}} </title>
+    <style>
+        @page {
+            size: a4;
+	        background-image: url('media/opcao/logo_nutri_lab.png');
+            background-object-position: 0px 920px;
+            background-width: 200px;
+            background-height: 200px;
+            @frame content_frame {
+                left: 50pt;
+                width: 512pt;
+                top: 50pt;
+                height: 692pt;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <h1 style="font-size: 20px; font-weight: 500; text-align: center;">{{paciente.nome}} : {{paciente.idade}} anos</h1>
+        <br><br><br>        
+
+   
+    {% for i in refeicao %}
+
+    <div class="fundo-alimentar" >
+        
+        <div class="refeicao">
+            <div class="head-refeicao">
+                <span>{{i.titulo}}</span>
+
+                <span style="float: right;">{{i.horario}}</span>
+
+            </div>
+
+            <div class="body-refeicao">
+                {% for o in opcao %}
+                    <div class="opcao">
+                        {% if o.refeicao == i %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img width="200px" src="{{o.imagem.path}}"> 
+                            </div>
+
+                            <div class="col-md-10">
+                                {{o.descricao}}
+                            </div>
+
+                        </div>
+                        {% endif %}
+                    </div>
+                    <br>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+    <br>
+    <hr>
+    <br>
+
+    {% endfor %}
+    
+</body>
+</html>

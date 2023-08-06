@@ -8,6 +8,11 @@ from .models import Pacientes, DadosPaciente, Refeicao, Opcao
 from django.views.decorators.csrf import csrf_exempt
 
 
+# xhtml2pdf
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
+
 
 @login_required(login_url='/auth/login/')
 def pacientes(request):
@@ -160,8 +165,8 @@ def refeicao(request, id_paciente):
             messages.add_message(request, constants.ERROR, 'Preencha todos os campos')
             return redirect(f'/plano_alimentar/{id_paciente}')
 
-        if not carboidratos.isnumeric() or proteinas.isnumeric() or gorduras.isnumeric():
-            messages.add_message(request, constants.ERROR, 'numeros válidos')
+        if not carboidratos.isnumeric() or not proteinas.isnumeric() or not gorduras.isnumeric():
+            messages.add_message(request, constants.ERROR, 'numeros inválidos')
             return redirect(f'/plano_alimentar/{id_paciente}')
 
         r1 = Refeicao(paciente=paciente,
@@ -191,4 +196,40 @@ def opcao(request, id_paciente):
         messages.add_message(request, constants.SUCCESS, 'Opcao cadastrada')
         return redirect(f'/plano_alimentar/{id_paciente}')
     
+    
 
+def pdf(request, id_paciente):
+    
+    paciente = get_object_or_404(Pacientes, id=id_paciente)
+    if not paciente.nutri == request.user:
+        messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
+        return redirect('/plano_alimentar_listar/')
+    
+    
+    re = Refeicao.objects.filter(paciente=paciente).order_by('horario')
+    opcao = Opcao.objects.all()
+        
+    template_path = 'pdf_template.html'
+    
+    context = {
+        'paciente': paciente,
+        'refeicao':re,
+        'opcao':opcao,
+             
+               }
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    #1 - cria pdf e faz download:
+    response['Content-Disposition'] = f'attachment; filename="Dieta_{paciente}.pdf"'
+
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    # if error then show some funny view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response

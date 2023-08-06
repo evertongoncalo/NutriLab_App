@@ -17,5 +17,6 @@ urlpatterns = [
     path('plano_alimentar/<str:id>/', views.plano_alimentar, name="plano_alimentar"),
     path('refeicao/<str:id_paciente>/', views.refeicao, name="refeicao"),
     path('opcao/<str:id_paciente>/', views.opcao, name="opcao"),
+    path('gerarpdf/<str:id_paciente>/', views.pdf, name="pdf"),
     path('logout/', views.logout, name="sair"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
