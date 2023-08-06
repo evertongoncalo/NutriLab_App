@@ -55,7 +55,7 @@
 
             <div class="body-refeicao">
                 {% for o in opcao %}
-                    <div class="opcao">
+                    <div class="opcao" style="margin-bottom: 20px;" >
                         {% if o.refeicao == i %}
                         <div class="row">
                             <div class="col-md-2">
@@ -63,13 +63,13 @@
                             </div>
 
                             <div class="col-md-10">
-                                {{o.descricao}}
+                                {{o.descricao}}                                
                             </div>
-
+                           
                         </div>
                         {% endif %}
                     </div>
-                    <br>
+                    
                 {% endfor %}
 
             </div>
